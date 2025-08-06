@@ -1,42 +1,28 @@
+// functions/api.js
 require('dotenv').config();
-const serverless = require("serverless-http")
-
-const express = require('express');
+const serverless = require('serverless-http');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const apiRoutes = require('../routes/api');
+const app = require('../../app'); // Adjust path if needed
 
-const app = express()
-const router = express.Router();
+let isConnected = false;
 
-// parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: false }))
-     
-// parse application/json
-app.use(express.json())
+const connectToDatabase = async () => {
+  if (isConnected) return;
+  try {
+    await mongoose.connect(process.env.URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    isConnected = true;
+    console.log('✅ MongoDB connected');
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err);
+  }
+};
 
-app.use(cors())
+const handler = async (event, context) => {
+  await connectToDatabase();
+  return serverless(app)(event, context);
+};
 
-const PORT = process.env.PORT || 3000; // Use a default if not set
-const uri = process.env.URI;
-
-
-// Routes
-router.use('/api/v1', apiRoutes);
-
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-
-mongoose.connect(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('MongoDB connected');
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}).catch(err => console.error(err));
-
-app.use('/.netlify/functions/api', router);
-
-export const handler = serverless(api);
+module.exports.handler = handler;
