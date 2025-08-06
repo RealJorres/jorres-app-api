@@ -12,6 +12,7 @@ const auth = require('../middleware/auth');
 // Public Auth Routes
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.get('/users', authController.getUsers);
 
 // College Routes
 router.post('/colleges', collegeController.createCollege);
