@@ -10,13 +10,17 @@ exports.register = async (req, res) => {
   try {
     const { username, role, email, password } = req.body;
 
-    // Check if user already exists
+    // ✅ Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists with this email' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10); // ⚠️ will break if password is undefined
     const user = new User({ username, role, email, password: hashedPassword });
     await user.save();
 
