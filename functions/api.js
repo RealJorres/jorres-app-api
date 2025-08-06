@@ -2,7 +2,7 @@
 require('dotenv').config();
 const serverless = require('serverless-http');
 const mongoose = require('mongoose');
-const app = require('../../app'); // Adjust path if needed
+const app = require('../app'); // Adjust path if needed
 
 let isConnected = false;
 
