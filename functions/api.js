@@ -6,6 +6,7 @@ const cors = require('cors');
 const apiRoutes = require('../routes/api');
 
 const app = express()
+const router = express.Router();
 
 // parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }))
@@ -20,9 +21,9 @@ const uri = process.env.URI;
 
 
 // Routes
-app.use('/api/v1', apiRoutes);
+router.use('/api/v1', apiRoutes);
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
@@ -34,5 +35,7 @@ mongoose.connect(uri, {
   console.log('MongoDB connected');
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }).catch(err => console.error(err));
+
+app.use('/.netlify/functions/api', router);
 
 export const handler = serverless(api);
