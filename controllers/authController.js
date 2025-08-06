@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
     const { username, password } = req.body;
 
     // ❗ Corrected: Find user by username
-    const user = await User.findOne({ username });
+    const user = await User.findOne( username );
     if (!user) {
       return res.status(401).json({ error: 'No user found!' });
     }
