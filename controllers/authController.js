@@ -8,7 +8,7 @@ const jwt_secret = process.env.JWT_SECRET;
 exports.register = async (req, res) => {
   try {
     const { username, role, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, parseInt(10, 10));
     const user = new User({ username, role, email, password: hashedPassword });
     await user.save();
     res.status(201).json({ message: 'User created' });
