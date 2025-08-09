@@ -43,10 +43,10 @@ exports.getStudentById = async (req, res) => {
 };
 
 module.exports.loginStudent = async (req, res) => {
-  const { studentID, password } = req.body;
+  const { studentID, studentPassword } = req.body;
 
   try {
-    if (!studentID || !password) {
+    if (!studentID || !studentPassword) {
       return res.status(400).json({ error: 'StudentID and password are required.' });
     }
 
