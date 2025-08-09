@@ -51,7 +51,7 @@ module.exports.loginStudent = async (req, res) => {
     }
 
     // Find the student by ID
-    const student = await Student.findOne({ studentID });
+    const student = await Student.findOne({ studentID:studentID });
 
     if (!student) {
       return res.status(404).json({ error: 'Student not found.' });
