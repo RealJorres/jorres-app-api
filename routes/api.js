@@ -25,6 +25,7 @@ router.get('/faculties', facultyController.getFaculties);
 // Student Routes
 router.post('/students', studentController.createStudent);
 router.get('/students', studentController.getStudents);
+router.get('/students/:id', studentController.getStudentById);
 
 // Course Routes
 router.post('/courses', courseController.createCourse);
