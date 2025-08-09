@@ -1,11 +1,11 @@
 require('dotenv').config();
 const serverless = require('serverless-http');
 const mongoose = require('mongoose');
-const app = require('../app'); // make sure this path is correct!
+const app = require('../app'); // your Express app
 
 let isConnected = false;
 
-// DB connection
+// MongoDB connection
 const connectToDatabase = async () => {
   if (isConnected) return;
   try {
@@ -20,19 +20,20 @@ const connectToDatabase = async () => {
   }
 };
 
-// Netlify-specific fix for req.body
-const handler = serverless(app, {
-  request: async (req, event, context) => {
-    if (event.body && typeof req.body === 'undefined') {
-      try {
-        req.body = JSON.parse(event.body);
-      } catch (err) {
-        console.error('❌ Failed to parse req.body:', err);
-      }
-    }
+// This wrapper ensures DB connection before request handling
+const handler = async (event, context) => {
+  await connectToDatabase();
 
-    await connectToDatabase(); // ensure DB is ready
+  // Netlify sends raw body, so manually parse if needed
+  if (event.body && event.headers['content-type']?.includes('application/json')) {
+    try {
+      event.body = JSON.parse(event.body);
+    } catch (err) {
+      console.error('❌ Failed to parse req.body:', err);
+    }
   }
-});
+
+  return serverless(app)(event, context);
+};
 
 module.exports.handler = handler;
