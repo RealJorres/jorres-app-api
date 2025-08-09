@@ -41,3 +41,42 @@ exports.getStudentById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+module.exports.loginStudent = async (req, res) => {
+  const { studentID, password } = req.body;
+
+  try {
+    if (!studentID || !password) {
+      return res.status(400).json({ error: 'StudentID and password are required.' });
+    }
+
+    // Find the student by ID
+    const student = await Student.findOne({ studentID });
+
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found.' });
+    }
+
+    // Compare the stored password
+    if (student.studentPassword !== password) {
+      return res.status(401).json({ error: 'Invalid password.' });
+    }
+
+    // If you want, you could return only necessary fields here
+    return res.status(200).json({
+      message: 'Login successful',
+      student: {
+        id: student._id,
+        studentID: student.studentID,
+        studentName: student.studentName,
+        studentYearSection: student.studentYearSection,
+        studentProgram: student.studentProgram,
+        collegeID: student.collegeID
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
