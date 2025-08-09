@@ -58,7 +58,7 @@ module.exports.loginStudent = async (req, res) => {
     }
 
     // Compare the stored password
-    if (student.studentPassword !== password) {
+    if (student.studentPassword !== studentPassword) {
       return res.status(401).json({ error: 'Invalid password.' });
     }
 
