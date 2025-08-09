@@ -24,7 +24,7 @@ router.get('/faculties', facultyController.getFaculties);
 
 // Student Routes
 router.post('/students', studentController.createStudent);
-router.post('students/login', studentController.loginStudent);
+router.post('/students/login', studentController.loginStudent);
 router.get('/students', studentController.getStudents);
 router.get('/students/:id', studentController.getStudentById);
 
